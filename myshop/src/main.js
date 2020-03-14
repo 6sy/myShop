@@ -6,11 +6,16 @@ import '../public/font/font_xn7gg6ug1r/iconfont.css'
 import axios from 'axios'
 import qs from 'qs'
 import alert from '../src/components/common/alert/alert.js'
+import Mint from 'mint-ui';
+Vue.use(Mint)
 Vue.use(alert)
 axios.defaults.baseURL = 'http://127.0.0.1:3000/'
 // 请求响应拦截
 axios.interceptors.request.use(config => {
-  console.log(1)
+  let token = window.localStorage.getItem('my-token')
+  if (token) {
+    config.headers['authorization'] = 'bearer ' + token
+  }
   return config
 }, err => {
   console.log(err)

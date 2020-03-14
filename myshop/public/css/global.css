@@ -12,6 +12,9 @@
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
+input{
+  outline: none;
+}
 
 /* Sections
    ========================================================================== */
@@ -75,6 +78,11 @@ pre {
 
 a {
   background-color: transparent;
+}
+
+p{
+  margin: 0;
+  padding: 0;
 }
 
 /**

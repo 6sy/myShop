@@ -37,6 +37,29 @@ let userSchema = new Schema({
     type: String,
     default: 'Y'
   },
+  // 搜索历史：
+  user_searchHy: {
+    type: Array,
+    default: [],
+  },
+  // 用户收藏
+  user_collect: {
+    type: Array,
+    default: [],
+  },
+  // 用户购物车
+  user_cart: {
+    type: JSON,
+    default: {}
+  },
+  user_adress: {
+    type: Array,
+    default: []
+  },
+  user_order: {
+    type: Array,
+    default: []
+  }
 })
 
 // 创建模型对象

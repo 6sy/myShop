@@ -6,9 +6,9 @@
     <!-- 用户信息 -->
     <div class='headImg'>
       <div class='img'>
-        <img src="https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1822301111,3940591519&fm=26&gp=0.jpg">
+        <img :src="userImg">
       </div>
-      <div class='name'>asd</div>
+      <div class='name'>{{userName}}</div>
       <div class='boxMember'></div>
     </div>
     <!-- 应用区 -->
@@ -32,9 +32,35 @@
     </div>
     <!-- 购物车 -->
     <div class='cart'>
-      <div class='cart-left'></div>
-      <div class='cart-right'></div>
-      <div></div>
+      <div class='cart-left'>
+        <div>购物车</div>
+      </div>
+      <div class='cart-right'>
+        <div>卡卷红包<span class="iconfont icon-qianjin"></span></div>
+        <div>补贴保障<span class="iconfont icon-qianjin"></span></div>
+        <div class='r1'>我的钱包<span class="iconfont icon-qianjin"></span></div>
+      </div>
+    </div>
+    <!-- 订单 -->
+    <div class='order'>
+      <div class='order-top'>
+        <div>我的订单</div>
+        <span class='iconfont icon-qianjin'></span>
+      </div>
+      <div class='order-bottom'>
+        <div v-for='(item,index) in orderInfo'
+             :key='index'
+             @click='goProfileOrder(index)'><img :src="item.img"
+               alt="">
+          <p>{{item.text}}</p>
+          <div class='numIcon'
+               v-show='item.num'>{{item.num}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- 退出按钮 -->
+    <div class='finalBtn'>
+      <div @click='quitLogin'>退出登录</div>
     </div>
   </div>
 </template>
@@ -44,15 +70,72 @@ export default {
   components: {
     headApp,
   },
-  mounted () {
+  data () {
+    return {
+      orderInfo: [
+        { img: 'https://s10.mogucdn.com/mlcdn/c45406/190815_0ig16599k9l4f80g59cbkc6bcadid_75x75.png', text: '待付款', num: 0 },
+        { img: 'https://s10.mogucdn.com/mlcdn/c45406/190815_5j02c44liecec503kdldjbh72hca8_75x75.png', text: '代发货', num: 0 },
+        { img: 'https://s10.mogucdn.com/mlcdn/c45406/190815_56bd5eg3f4h47g2l1042436dc2950_75x75.png', text: '待收货', num: 0 },
+        { img: 'https://s10.mogucdn.com/mlcdn/c45406/190815_8af1b27cfaed15fllab4j3hffh7h8_75x75.png', text: '待评价', num: 0 },
+        { img: 'https://s10.mogucdn.com/mlcdn/c45406/190815_18db4je44bd6ej8ajg0l1950ia5ih_75x75.png', text: '退款售后', num: 0 }
 
+      ],
+      userName: '',
+      userImg: '',
+      orderList: []
+
+    }
+  },
+  created () {
+    this.getUserInfo()
+    this.getUserOrder()
+
+  },
+  methods: {
+    quitLogin () {
+      localStorage.removeItem('my-token')
+      this.$router.push('/login')
+    },
+    async getUserInfo () {
+      const result = await this.$http({
+        method: 'get',
+        url: 'api/users/userInfo',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+      })
+      if (result.data.success) {
+        let user = result.data.data
+        this.userName = user.user_account
+        this.userImg = user.user_img
+      } else {
+        console.log(result)
+      }
+    },
+    async getUserOrder () {
+      const result = await this.$http({
+        method: 'get',
+        url: 'api/users/getOrder',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+      })
+      this.orderList = result.data.data
+      console.log(this.orderList)
+
+      this.orderList.forEach(item => {
+        this.orderInfo[item['state']]['num']++
+      })
+    },
+    goProfileOrder (index) {
+      this.$router.push({ name: 'profileOrder', query: { data: this.orderList, index } })
+    }
   }
 }
 </script>
 <style scoped>
 .profile {
   background: rgb(246, 246, 246);
-  height: 667px;
 }
 .headImgAround {
   height: 70px;
@@ -130,16 +213,117 @@ export default {
   width: 335px;
   height: 120px;
   margin-left: 20px;
-  margin-top: 20px;
+  margin-top: 15px;
+  justify-content: space-between;
 }
 .cart-left {
-  width: 120px;
+  width: 160px;
   height: 120px;
   background: white;
+  border-radius: 10px;
+  font-size: 12px;
+  background-image: url("https://s10.mogucdn.com/mlcdn/c45406/190815_3637hh8ac09e50j7f07i7eealck4i_513x360.png");
+  background-size: 140px 120px;
+}
+.cart-left div {
+  padding-left: 10px;
+  font-size: 15px;
+  padding-top: 10px;
 }
 .cart-right {
-  width: 120px;
+  width: 160px;
   height: 120px;
   background: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.cart-right div {
+  flex: 1;
+  line-height: 40px;
+  font-size: 12px;
+  padding-left: 5px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.cart-right div span {
+  margin-left: 85px;
+  color: #5e5e5e;
+  font-size: 5px;
+}
+.r1 {
+  border-bottom: none !important;
+}
+.order {
+  width: 335px;
+  height: 100px;
+  margin-left: 20px;
+  margin-top: 25px;
+  background: white;
+  border-radius: 10px;
+}
+.order-top {
+  height: 40px;
+  width: 100%;
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 40px;
+  font-size: 14px;
+  padding-left: 10px;
+  display: flex;
+}
+.order-top span {
+  margin-left: 235px;
+}
+.order-bottom {
+  height: 60px;
+  width: 100%;
+  display: flex;
+}
+.order-bottom div {
+  flex: 1;
+  padding-top: 10px;
+  padding-left: 8px;
+  position: relative;
+}
+.order-bottom div img {
+  width: 25px;
+  height: 25px;
+  margin-left: 10px;
+}
+.order-bottom div p {
+  margin: 0;
+  padding: 0;
+  color: #5e5e5e;
+  font-size: 12px;
+  margin-left: 5px;
+}
+.finalBtn {
+  width: 335px;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+.finalBtn {
+  width: 335px;
+  height: 40px;
+  background: rgb(255, 68, 102);
+  margin-top: 7px;
+  color: white;
+  line-height: 40px;
+  text-align: center;
+}
+.numIcon {
+  padding: 0 !important;
+  top: -45px;
+  right: -27px;
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  font-size: 10px;
+  line-height: 15px;
+  text-align: center;
+  background: red;
+  color: white;
+  position: absolute;
 }
 </style>

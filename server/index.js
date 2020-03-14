@@ -5,6 +5,7 @@ let db = require('./db/index')
 var bodyParser = require('koa-bodyparser')
 let jwt = require('koa-jwt')
 let serve = require('koa-static')
+let shops = require('./router/api/shopItem')
 
 let app = new koa()
 let router = new Router()
@@ -24,6 +25,8 @@ app.use(jwt({ secret: 'shhhh', passthrough: true }))
 db.then(() => {
   // 配置路由地址
   router.use('/api/users', users)
+  // 配置商品
+  router.use('/api/shops', shops)
 })
 
 

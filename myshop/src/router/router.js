@@ -7,6 +7,10 @@ import home from '../components/view/home/home'
 import serach from '../components/view/serach/serach'
 import profile from '../components/view/profile/profile'
 import cart from '../components/view/cart/cart'
+import serachItem from '../components/view/serach/serachItem'
+import goods from '../components/view/goods/good'
+import order from '../components/view/order/order'
+import profileOrder from '../components/view/profile/profileOrder'
 
 
 Vue.use(vueRouter)
@@ -14,6 +18,10 @@ const routes = [
   { path: '/', redirect: '/enter' },
   { path: '/login', component: login, meta: { isLogin: true } },
   { path: '/register', component: rigister, meta: { isLogin: true } },
+  { path: '/serachItem', name: 'serachItem', component: serachItem, meta: { isLogin: true } },
+  { path: '/goods/:id', name: 'goods', component: goods },
+  { path: '/order', name: 'order', component: order },
+  { path: '/profileOrder', name: 'profileOrder', component: profileOrder },
   {
     path: '/enter', component: enter, children: [
       { path: '/', redirect: '/home', meta: { isLogin: true } },
