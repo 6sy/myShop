@@ -6,6 +6,10 @@ let bcrypt = require('bcryptjs')
 const jwt = require('koa-jwt')
 const jsonwebtoken = require('jsonwebtoken')
 let qs = require('qs')
+const multer = require('@koa/multer');
+const upload = multer()
+const fs = require('fs')
+const path = require('path')
 
 // 注册
 router.post('/register', async ctx => {
@@ -263,5 +267,13 @@ router.get('/getOrder', async ctx => {
   if (result.length > 0) {
     ctx.body = { success: true, data: result[0]['user_order'] }
   }
+})
+router.post('/upload', upload.single('file'), async ctx => {
+  console.log(ctx.request.file)
+  let imgPath = 'F:\\myShop\\server\\public\\image\\'
+  console.log(imgPath)
+  fs.writeFile(imgPath + ctx.request.file.originalname, ctx.request.file.buffer, function (err) {
+    console.log(err)
+  })
 })
 module.exports = router.routes()

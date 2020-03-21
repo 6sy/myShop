@@ -75,8 +75,6 @@ let shopSchema = new Schema({
   s_shop_mes: {
     type: Array,
   }
-
-
 })
 
 let shopModel = mongoose.model('shopItem', shopSchema)

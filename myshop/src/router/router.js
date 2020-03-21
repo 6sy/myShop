@@ -11,6 +11,7 @@ import serachItem from '../components/view/serach/serachItem'
 import goods from '../components/view/goods/good'
 import order from '../components/view/order/order'
 import profileOrder from '../components/view/profile/profileOrder'
+import profileInfo from '../components/view/profile/profileInfo'
 
 
 Vue.use(vueRouter)
@@ -22,6 +23,7 @@ const routes = [
   { path: '/goods/:id', name: 'goods', component: goods },
   { path: '/order', name: 'order', component: order },
   { path: '/profileOrder', name: 'profileOrder', component: profileOrder },
+  { path: '/profileInfo', component: profileInfo, name: 'profileInfo' },
   {
     path: '/enter', component: enter, children: [
       { path: '/', redirect: '/home', meta: { isLogin: true } },

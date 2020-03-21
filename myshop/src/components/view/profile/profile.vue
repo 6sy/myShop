@@ -2,11 +2,16 @@
   <div class='profile'>
     <!-- 头部 -->
     <headApp />
+    <input type='file'
+           @change='upolad'
+           name='avatar'
+           autocomplete="off">
     <div class='headImgAround'></div>
     <!-- 用户信息 -->
     <div class='headImg'>
       <div class='img'>
-        <img :src="userImg">
+        <img :src="userImg"
+             @click='goProfileInfo'>
       </div>
       <div class='name'>{{userName}}</div>
       <div class='boxMember'></div>
@@ -129,6 +134,26 @@ export default {
     },
     goProfileOrder (index) {
       this.$router.push({ name: 'profileOrder', query: { data: this.orderList, index } })
+    },
+    //
+    async upolad (e) {
+      let file = e.target.files[0]
+      console.log(file)
+      let fd = new FormData()
+      fd.append('file', file)
+      console.log(fd.get('file'))
+      const result = await this.$http({
+        method: 'post',
+        url: 'api/users/upload',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: fd
+      })
+      console.log(result)
+    },
+    goProfileInfo () {
+      this.$router.push('/profileInfo')
     }
   }
 }

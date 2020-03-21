@@ -66,6 +66,9 @@ export default {
     this.getCart()
     this.changeBtn()
   },
+  activated () {
+    this.getCart()
+  },
   computed: {
     // 总价钱
     isAllPrice () {

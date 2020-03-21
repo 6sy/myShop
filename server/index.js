@@ -6,7 +6,6 @@ var bodyParser = require('koa-bodyparser')
 let jwt = require('koa-jwt')
 let serve = require('koa-static')
 let shops = require('./router/api/shopItem')
-
 let app = new koa()
 let router = new Router()
 // 静态资源

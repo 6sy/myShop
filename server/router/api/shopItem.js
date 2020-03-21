@@ -101,6 +101,17 @@ router.post('/getDetail', async ctx => {
     console.log(reslut)
   }
 })
+// 搜索商品
+router.post('/searchGoods', async ctx => {
+  ctx.request.body = qs.parse(ctx.request.body)
+  const reg = new RegExp(ctx.request.body['s_msg'], 'i')
+  const reslut = await shopModel.find({ $or: [{ s_msg: reg }, { s_type: reg }] })
+  if (reslut.length > 0) {
+    ctx.body = reslut
+  } else {
+    console.log(reslut)
+  }
+})
 
 
 
