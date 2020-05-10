@@ -113,7 +113,7 @@ export default {
     },
     loadMore () {
       this.loading = true
-      console.log(this.goodList.length)
+      // console.log(this.goodList.length)
       if (this.goodList.length !== 13) {
         this.query++
         this.getGoodsList(this.query, this.num)

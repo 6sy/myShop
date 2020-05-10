@@ -24,6 +24,7 @@ router.post('/register', async ctx => {
 })
 // 登录
 router.post('/login', async ctx => {
+  console.log(1)
   ctx.request.body = qs.parse(ctx.request.body)
   const result = await userModel.find({ user_account: ctx.request.body.user_account })
   if (result.length == 0) {
@@ -41,7 +42,6 @@ router.post('/login', async ctx => {
     }
     // 密码错误
     else {
-      ctx.status = 404
       ctx.body = {
         msg: '账号密码错误',
         success: false
@@ -268,12 +268,22 @@ router.get('/getOrder', async ctx => {
     ctx.body = { success: true, data: result[0]['user_order'] }
   }
 })
+// 上传头像
 router.post('/upload', upload.single('file'), async ctx => {
-  console.log(ctx.request.file)
+  let time = new Date().getTime()
+  let user = ctx.state.user.user
+  console.log(user)
   let imgPath = 'F:\\myShop\\server\\public\\image\\'
-  console.log(imgPath)
-  fs.writeFile(imgPath + ctx.request.file.originalname, ctx.request.file.buffer, function (err) {
+  // 写入照片
+  fs.writeFile(imgPath + ctx.request.file.originalname + time + '.png', ctx.request.file.buffer, function (err) {
     console.log(err)
   })
+  // 获取修改后照片地址
+  let url = 'http://127.0.0.1:3000/image/' + 'blob' + time + '.png'
+  // 修改数据库
+  const result = await userModel.update({ user_account: user }, { user_img: url })
+  if (result) {
+    ctx.body = { success: true, url }
+  }
 })
 module.exports = router.routes()

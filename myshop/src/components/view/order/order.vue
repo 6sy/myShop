@@ -1,7 +1,8 @@
 <template>
   <div class='order'>
     <NavBar>
-      <div slot='left'><span class='iconfont icon-tubiaozhizuo--'
+      <div slot='left'
+           @click='goback'><span class='iconfont icon-tubiaozhizuo--'
               style=' font-size: 25px;'></span></div>
       <div slot='center'>确认订单</div>
     </NavBar>
@@ -324,7 +325,6 @@ export default {
     },
     // 隐藏电话号中间
     hidePhone () {
-
     },
     //提交订单
     async submitOrder () {
@@ -345,6 +345,9 @@ export default {
           this.$alert.success('订单成功生成', 1000)
         }
       }
+    },
+    goback () {
+      this.$router.go(-1)
     }
   }
 }

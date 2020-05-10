@@ -7,15 +7,25 @@
     <div class='input'><input type="password"
              v-model="loginForm.user_password"
              placeholder="密码" /></div>
+    <confirm ref='confirm'></confirm>
     <div class='button'
          @click="login">登录</div>
     <div class='goRegister'
          @click='goRegister'>点击注册</div>
+    <!-- <loading :isShow='isLoading'
+             :radius='30'
+             :lineWidth='10'></loading> -->
+
   </div>
 </template>
 <script>
-
+import confirm from '../common/confirm/confirm'
+// import loading from '@/components/common/loading/loading.vue'
 export default {
+  components: {
+    confirm,
+    // loading
+  },
   data () {
     return {
       loginForm: {
@@ -26,21 +36,35 @@ export default {
   },
   methods: {
     async login () {
-      const result = await this.$http({
-        method: 'post',
-        url: 'api/users/login',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-        },
-        data: this.$qs.stringify(this.loginForm)
-      })
-      console.log(result.data.success)
-      if (result.data.success) {
-        this.$alert.success('登陆成功', 1000)
-        this.$router.push('/enter')
-        console.log(result.headers["my-token"])
-        let token = result.headers["my-token"]
-        localStorage.setItem('my-token', token)
+      if (!this.$refs.confirm.confirm()) {
+        this.$alert.error('验证码错误', 1000)
+        return
+      }
+      if (this.loginForm.user_account && this.loginForm.user_password) {
+        this.$refs.confirm.isLoading = true
+        const result = await this.$http({
+          method: 'post',
+          url: 'api/users/login',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+          data: this.$qs.stringify(this.loginForm)
+        })
+        if (result.data.success) {
+          this.$alert.success('登陆成功', 1000)
+          this.$refs.confirm.isLoading = false
+          this.$router.push('/enter')
+          console.log(result.headers["my-token"])
+          let token = result.headers["my-token"]
+          localStorage.setItem('my-token', token)
+          this.loginForm.user_account = ''
+          this.loginForm.user_password = ''
+        } else {
+          this.$alert.error('账号密码错误，请重新输入', 1000)
+          this.$refs.confirm.isLoading = false
+        }
+      } else {
+        this.$alert.error('账号密码不能为空', 1000)
       }
     },
     goRegister () {
@@ -89,6 +113,6 @@ input::-webkit-input-placeholder {
   margin-left: 290px;
   margin-top: 10px;
   font-size: 5px;
-  color: #5e5e5e;
+  color: #999999;
 }
 </style>

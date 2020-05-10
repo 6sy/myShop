@@ -61,10 +61,6 @@ router.get('/addShop', async ctx => {
       lovePerson: 15023,
       vendre: 26.7,
     })
-
-
-
-
   })
   if (result) {
     console.log(result)
@@ -109,7 +105,7 @@ router.post('/searchGoods', async ctx => {
   if (reslut.length > 0) {
     ctx.body = reslut
   } else {
-    console.log(reslut)
+    ctx.body = reslut
   }
 })
 

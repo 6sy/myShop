@@ -1,7 +1,8 @@
 <template>
   <div class='profileOrder'>
     <narBar class='narBar'>
-      <div slot='left'><span class='iconfont icon-tubiaozhizuo--'
+      <div slot='left'
+           @click='goback'><span class='iconfont icon-tubiaozhizuo--'
               style=' font-size: 25px;'></span></div>
       <div slot='center'>订单列表</div>
     </narBar>
@@ -23,7 +24,7 @@
              :key='index'
              class='goodsList'>
           <div class='goodsListDiv'>
-            <div><span style='font-weight:600'>{{orderDes[orderIndex]}}</span><span>1</span></div>
+            <div><span style='font-weight:600'>{{orderDes[orderIndex]}}</span><span></span></div>
             <div v-for='(item1,index1) in item.goodsList'
                  :key='index1'
                  class='goodsListShop'>
@@ -61,11 +62,26 @@ export default {
   created () {
     this.orderIndex = Number(this.$route.query.index) + 1
     this.orderList = this.$route.query.data
+  },
+  mounted () {
     console.log(this.orderList)
+    if (this.orderList[0] === "[object Object]") {
+      console.log(1)
+      this.$router.push('/home')
+    }
+  },
+  activated () {
+    this.orderIndex = Number(this.$route.query.index) + 1
+    this.orderList = this.$route.query.data
+    console.log(this.orderList)
+    if (this.orderList === "[object Object]") {
+      this.$router.push('/home')
+    }
   },
   data () {
     return {
       orderDes: ['全部', '待付款', '代发货', '待收货', '待评价', '售后'],
+      // 当前选中
       orderIndex: 0,
       orderList: []
     }
@@ -95,6 +111,9 @@ export default {
         price = item.price * item.num + price
       })
       return price
+    },
+    goback () {
+      this.$router.go(-1)
     }
   }
 }

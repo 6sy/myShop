@@ -134,4 +134,78 @@ function createWatcher (vm, exp, handler, options) {
   }
   return vm.$watch(exp, handler, options)
 }
+Vue.prototype.$on = function (event, fn) {
+  const vm = this
+  if (Array.isArray(fn)) {
+    for (let i = 0, j = event.length; i < j; i++) {
+      this.$on(event, fn[i])
+    }
+  } else {
+    (vm._events[event] || (vm.events[event] = [])).push(fn)
+  }
+  return vm
+}
+Vue.prototype.$off = function (event, fn) {
+  const vm = this
+  // 无参数
+  if (!arguments) {
+    vm._events = Object.create(null)
+    return vm
+  }
+  // 新增
+  // 一个参数
+  else if (arguments.length === 1) {
+    const e = arguments[0]
+    //判断是否为数组
+    if (Array.isArray(e)) {
+      for (let i = 0, j = e.length; i < j; i++) {
+        this.$off(e[i])
+      }
+    } else {
+      vm._events[event] = null
+      return vm
+    }
+  }
+  // 传递事件名和回调函数
+  else if (fn && typeof event === 'string') {
+    const cbs = vm._events[event]
+    let j = cbs.length
+    for (let i = 0; i < j; i++) {
+      // 
+      if (fn === cbs[i]) {
+        cbs.splice(i, 1)
+        return
+      }
+    }
+  }
+  return vm
+}
+
+Vue.prototype.$emit = function (event) {
+  const vm = this
+  let cbs = vm._events[event]
+  if (cbs) {
+    const args = toArray(arguments, 1)
+    for (let i = 0, j = cbs.length; i < j; i++) {
+      try {
+        cbs[i].apply(vm, args)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+  return vm
+}
+
+Vue.prototype.$once = function (event, fn) {
+  const vm = this
+  function on () {
+    vm.$off(event, on)
+    fn.apply(vm, arguments)
+  }
+  on.fn = fn
+  vm.$on(event, on)
+  return vm
+}
 </script>
+

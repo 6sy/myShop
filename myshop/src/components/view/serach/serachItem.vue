@@ -109,8 +109,12 @@ export default {
         },
         data: this.$qs.stringify({ s_msg: this.searchText })
       })
-      this.listItem = result.data
-      this.trueListItem = this.listItem
+      try {
+        this.listItem = result.data
+        this.trueListItem = this.listItem
+      } catch (e) {
+        console.log(e)
+      }
     },
     goGoodDetail (id) {
       this.$router.push('/goods/' + id)

@@ -2,10 +2,10 @@
   <div class='profile'>
     <!-- 头部 -->
     <headApp />
-    <input type='file'
+    <!-- <input type='file'
            @change='upolad'
            name='avatar'
-           autocomplete="off">
+           autocomplete="off"> -->
     <div class='headImgAround'></div>
     <!-- 用户信息 -->
     <div class='headImg'>
@@ -67,13 +67,16 @@
     <div class='finalBtn'>
       <div @click='quitLogin'>退出登录</div>
     </div>
+    <up-load ref='upload'></up-load>
   </div>
 </template>
 <script>
 import headApp from './head.vue'
+import upLoad from '@/components/common/uploadImg/uploadImg'
 export default {
   components: {
     headApp,
+    upLoad
   },
   data () {
     return {
@@ -91,10 +94,18 @@ export default {
 
     }
   },
-  created () {
+  mounted () {
+    this.$bus.$on('on1', data => {
+      this.userImg = data
+    })
+  },
+  activated () {
     this.getUserInfo()
+    this.orderList = []
+    this.orderInfo.forEach(item => {
+      item.num = 0
+    })
     this.getUserOrder()
-
   },
   methods: {
     quitLogin () {
@@ -129,13 +140,14 @@ export default {
       console.log(this.orderList)
 
       this.orderList.forEach(item => {
-        this.orderInfo[item['state']]['num']++
+        this.orderInfo[(item['state'])]['num'] += 1
+        console.log(222)
       })
     },
     goProfileOrder (index) {
       this.$router.push({ name: 'profileOrder', query: { data: this.orderList, index } })
     },
-    //
+    //  上传头像
     async upolad (e) {
       let file = e.target.files[0]
       console.log(file)
@@ -153,7 +165,8 @@ export default {
       console.log(result)
     },
     goProfileInfo () {
-      this.$router.push('/profileInfo')
+      this.$refs.upload.iptClick()
+
     }
   }
 }
@@ -161,6 +174,7 @@ export default {
 <style scoped>
 .profile {
   background: rgb(246, 246, 246);
+  margin-bottom: 44px;
 }
 .headImgAround {
   height: 70px;

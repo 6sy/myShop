@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue'
+import Vue from 'vue/dist/vue.esm.js'
 import vueRouter from 'vue-router'
 import login from '../components/start/login'
 import rigister from '../components/start/register'
@@ -12,6 +12,9 @@ import goods from '../components/view/goods/good'
 import order from '../components/view/order/order'
 import profileOrder from '../components/view/profile/profileOrder'
 import profileInfo from '../components/view/profile/profileInfo'
+import chat from '../components/view/chat/chat'
+import chatShop from '../components/view/chat/chatShop'
+import chatShopUser from '../components/view/chat/chatShopUser'
 
 
 Vue.use(vueRouter)
@@ -24,6 +27,9 @@ const routes = [
   { path: '/order', name: 'order', component: order },
   { path: '/profileOrder', name: 'profileOrder', component: profileOrder },
   { path: '/profileInfo', component: profileInfo, name: 'profileInfo' },
+  { path: '/chat', component: chat, name: 'chat' },
+  { path: '/chatShop', component: chatShop, name: 'chatShop' },
+  { path: '/chatShopUser', component: chatShopUser, name: 'chatShopUser' },
   {
     path: '/enter', component: enter, children: [
       { path: '/', redirect: '/home', meta: { isLogin: true } },

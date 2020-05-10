@@ -103,14 +103,14 @@
       <div>
         <span class='iconfont icon-xiaoxi'
               style='color:red;font-size:20px;'></span>
-        <span>客服</span>
+        <span @click='goChat'>客服</span>
       </div>
       <div @click='collect'
            :class='{red:isCollect}'>
         <span class='iconfont icon-collect'></span>
         <span>收藏</span>
       </div>
-      <div>加入购物车</div>
+      <div @click='isShowBuy=true'>加入购物车</div>
       <div>购买商品</div>
     </div>
     <!-- gocart -->
@@ -174,16 +174,22 @@ export default {
   },
   data () {
     return {
+      // 商品信息
       detail: {},
+      // 评论
       recommend: [],
       shop: {},
+      // 关闭购买选项
       isShowBuy: false,
       num: 1,
+      // 商品选中的类型
       isShop_type: '',
+      // 商品选中的大小
       isShop_size: '',
       shop_type: [],
       shop_size: [],
       shopType: {},
+      // 是否收藏
       isCollect: false
     }
   },
@@ -194,6 +200,25 @@ export default {
     }
   },
   created () {
+    new Swiper('.swiper-container', {
+      spaceBetween: 30,
+      centeredSlides: true,
+      initialSlide: 0,
+      observer: true,
+      observerParents: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      }
+    })
+    this.getDetail()
+    this.IsCollect()
+  },
+  activated () {
     new Swiper('.swiper-container', {
       spaceBetween: 30,
       centeredSlides: true,
@@ -268,6 +293,7 @@ export default {
     },
     // 获取用户收藏
     async IsCollect () {
+      this.isCollect = false
       const result = await this.$http({
         method: 'get',
         url: 'api/users/userInfo',
@@ -275,11 +301,12 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
       })
-      console.log(result)
       let collects = result.data.data.user_collect
+
       let id = this.$route.params.id
+      console.log(collects, id)
       for (let i = 0; i < collects.length; i++) {
-        if (id == collects[i]) {
+        if (id === collects[i]) {
           this.isCollect = true
           return
         }
@@ -299,9 +326,9 @@ export default {
     },
     //点击改变颜色类型
     changeType (item) {
-      this.shop_size = Object.keys(this.shopType[item])
+      // this.shop_size = Object.keys(this.shopType[item])
       this.isShop_type = item
-      this.isShop_size = this.shop_size[0]
+      // this.isShop_size = this.shop_size[0]
     },
     //点击改变大小
     changeSize (item) {
@@ -318,6 +345,7 @@ export default {
         num: this.num,
         shop: this.shop.name,
         uid: this.$route.params.id,
+        // 是否选中 用于购物车
         isOk: false
       }
       await this.$http({
@@ -328,6 +356,24 @@ export default {
         },
         data: this.$qs.stringify(obj)
       })
+      this.$alert.success('加入购物车成功', 1000)
+      this.isShowBuy = false
+    },
+    // 聊天
+    goChat () {
+      this.$router.push({
+        name: 'chat',
+        params: {
+          shop: {
+            name: this.shop.name,
+            img: this.shop.img
+          },
+          item: {
+            img: this.detail.s_img_one,
+            text: this.detail.s_msg,
+            price: this.detail.s_newPrice
+          }
+        }      })
     }
   }
 }

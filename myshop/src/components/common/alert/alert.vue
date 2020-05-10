@@ -1,8 +1,10 @@
 <template>
-  <div class='toast'
-       v-show='isShow'
-       :class='color'>
-    {{message}}
+  <div>
+    <span class='toast'
+          v-show='isShow'
+          :class='color'>
+      {{message}}
+    </span>
   </div>
 </template>
 <script>
@@ -39,18 +41,31 @@ export default {
 <style scoped>
 .toast {
   position: fixed;
-  width: 375px;
-  bottom: 0;
+  width: 300px;
+  margin-left: 37.5px;
+  top: 30px;
   z-index: 999;
   padding: 8px 10px;
-  background-color: rgba(0, 0, 0, 0.3);
   text-align: center;
-  color: honeydew;
+  animation: animate;
+  animation-duration: 1s;
 }
 .red {
-  background: rgba(244, 67, 54);
+  background: rgb(253, 226, 226);
+  color: #f56c6c;
 }
 .green {
-  background: rgba(76, 175, 80);
+  background: rgb(240, 249, 235);
+  color: #67c23a;
+}
+@keyframes animate {
+  0% {
+    opacity: 0;
+    top: 0;
+  }
+  100% {
+    opacity: 1;
+    top: 30px;
+  }
 }
 </style>

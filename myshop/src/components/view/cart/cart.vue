@@ -65,9 +65,12 @@ export default {
   created () {
     this.getCart()
     this.changeBtn()
+    this.isBigBtn = false
   },
   activated () {
     this.getCart()
+    this.changeBtn()
+    this.isBigBtn = false
   },
   computed: {
     // 总价钱
@@ -125,7 +128,6 @@ export default {
       console.log(this.cartList)
     },
     shopBtn (item) {
-      console.log(this.isShop[item])
       this.isShop[item] = !this.isShop[item]
       if (!this.isShop[item]) {
         this.cartList[item].forEach(item1 => {
@@ -161,7 +163,7 @@ export default {
       this.change1Btn()
       this.change2btn()
     },
-    // 确定1点击一个影响别的按钮
+    // 判断商品全选按钮影响商店
     changeBtn () {
       for (let i = 0; i < this.shop.length; i++) {
         let result = this.cartList[this.shop[i]].every((item) => {
@@ -175,7 +177,7 @@ export default {
         }
       }
     },
-    // 确定点击2
+    //     判断商店全选 影响商品
     change1Btn () {
       for (let j = 0; j < this.shop.length; j++) {
         if (this.isShop[this.shop[j]] == true) {
@@ -185,6 +187,7 @@ export default {
         }
       }
     },
+    // 判断商店影响 全选
     change2btn () {
       let result = this.shop.every((item) => {
         return this.isShop[item] === true
@@ -196,19 +199,23 @@ export default {
       }
     },
     goBack () {
-      console.log(1)
       this.$router.push('/home')
     },
     goOrder () {
       let obj = []
       for (let i = 0; i < this.shop.length; i++) {
         this.cartList[this.shop[i]].forEach((item) => {
+          console.log(item['isOk'])
           if (item['isOk']) {
             obj.push(item)
           }
         })
-        this.$router.push({ name: 'order', params: { obj } })
       }
+      if (obj.length === 0) {
+        this.$alert.error('请选择商品', 1000)
+        return true
+      }
+      this.$router.push({ name: 'order', params: { obj } })
     }
   }
 }
