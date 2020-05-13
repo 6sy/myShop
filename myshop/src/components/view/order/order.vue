@@ -205,7 +205,6 @@ export default {
   },
   created () {
     this.cityData = cityData
-    console.log(this.cityData)
     this.getAdress()
   },
   mounted () {
@@ -265,11 +264,17 @@ export default {
   },
   data () {
     return {
+      // 地址
       adress: '',
+      // 商品列表
       goodsList: [],
+      // 地址列表
       adressList: [],
+      // 添加订单显示框
       isAddAdress: false,
+      // 添加订单地址显示框
       isAddAdressMes: false,
+      // 地址信息
       addAdressMes: {
         person: '',
         phone: '',
@@ -320,6 +325,7 @@ export default {
       })
       if (result.data.success) {
         this.$alert.success('添加地址成功', 1000)
+        this.isAddAdressMes = false
         this.getAdress()
       }
     },

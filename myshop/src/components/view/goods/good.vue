@@ -2,6 +2,11 @@
   <div class='good'>
     <!-- head -->
     <headApp></headApp>
+    <!-- gobackBtn -->
+    <div class='goback'>
+      <span class='iconfont icon-tubiaozhizuo--'
+            @click='goback'></span>
+    </div>
     <!-- swiper -->
     <div class="swiper-container">
       <div class="swiper-wrapper">
@@ -290,6 +295,9 @@ export default {
         this.isCollect = false
       }
 
+    },
+    goback () {
+      this.$router.go(-1)
     },
     // 获取用户收藏
     async IsCollect () {
@@ -741,5 +749,13 @@ export default {
 }
 .red {
   color: red;
+}
+.goback {
+  position: absolute;
+  z-index: 99;
+  left: 1px;
+}
+.goback span {
+  font-size: 40px;
 }
 </style>
