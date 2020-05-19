@@ -53,8 +53,6 @@ export default {
   },
   mounted () {
     console.log(this.allMessage)
-
-
   },
   methods: {
     goBack () {
