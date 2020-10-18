@@ -45,7 +45,8 @@
             <div class='allPrice'>
               <span>全国包邮,总计:</span>
               <span>¥{{allprice(index)}}</span>
-              <div class='btn'>付款</div>
+              <div class='btn' v-if='item.state==0'>付款</div>
+              <div class='btn' v-if='item.state==1'>等待发货</div>
             </div>
           </div>
         </div>
