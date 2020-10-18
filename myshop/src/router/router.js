@@ -15,6 +15,8 @@ import profileInfo from '../components/view/profile/profileInfo'
 import chat from '../components/view/chat/chat'
 import chatShop from '../components/view/chat/chatShop'
 import chatShopUser from '../components/view/chat/chatShopUser'
+import adress from '../components/view/adress/adress'
+import payment from '../components/view/payment/payment'
 
 
 Vue.use(vueRouter)
@@ -30,6 +32,8 @@ const routes = [
   { path: '/chat', component: chat, name: 'chat' },
   { path: '/chatShop', component: chatShop, name: 'chatShop' },
   { path: '/chatShopUser', component: chatShopUser, name: 'chatShopUser' },
+  { path: '/adress', component: adress, name: 'adress' },
+  { path: '/payment', component: payment, name: 'paymnet' },
   {
     path: '/enter', component: enter, children: [
       { path: '/', redirect: '/home', meta: { isLogin: true } },

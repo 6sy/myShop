@@ -77,5 +77,5 @@ let shopSchema = new Schema({
   }
 })
 
-let shopModel = mongoose.model('shopItem', shopSchema)
+let shopModel = mongoose.model('shopitems', shopSchema)
 module.exports = shopModel

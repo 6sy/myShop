@@ -96,18 +96,17 @@
         <div v-for='(item,index) in adressList'
              :key='index'
              :class='{choose:index===choseAdress}'>
-          <div><span>{{item.person}}</span><span>{{item.phone}}</span></div>
-          <div><span>{{item.province+item.city+item.area+item.careAdress}}</span></div>
+          <div @click='chooseAdress(index)'><span>{{item.person}}</span><span>{{item.phone}}</span></div>
+          <div @click='chooseAdress(index)'><span>{{item.province+item.city+item.area+item.careAdress}}</span></div>
           <div><span class='iconfont icon-icon-test-copy'
                   style='font-size:15px'
-                  @click='defaultAdress=index'
-                  :class='{red:index===choseAdress}'></span><span style='margin-left:3px'>设为默认</span><span class='iconfont icon-bianji'
-                  style='margin-left:140px;color:red'></span><span style='margin-left:3px'>编辑</span><span class='iconfont icon-shanchu'
-                  style='margin-left:13px;color:red'></span><span style='margin-left:3px'>删除</span></div>
+                  :class='{red:index===choseAdress}' @click='chooseAdress(index)'></span><span style='margin-left:3px' @click='chooseAdress(index)'>设为默认</span><span class='iconfont icon-bianji'
+                  style='margin-left:140px;color:red'></span><span style='margin-left:3px' @click='editAdress(index)'>编辑</span><span class='iconfont icon-shanchu'
+                  style='margin-left:13px;color:red'></span><span style='margin-left:3px' @click='deleteAdress(index)'>删除</span></div>
         </div>
       </div>
       <div class='addAdress-bottom'
-           @click='isAddAdressMes=!isAddAdressMes'>+新建地址</div>
+           @click='isAddAdressMes=!isAddAdressMes;adressState=0'>+新建地址</div>
     </div>
     <!-- addAdressMes -->
     <div class='addAdressMes'
@@ -183,7 +182,7 @@
       </div>
       <!-- 确定取消按钮 -->
       <div class='btn'>
-        <button>取消</button>
+        <button @click='isAddAdressMes=false'>取消</button>
         <button @click='add'>确定</button>
       </div>
     </div>
@@ -206,6 +205,7 @@ export default {
   created () {
     this.cityData = cityData
     this.getAdress()
+    console.log(cityData)
   },
   mounted () {
     this.goodsList = this.$route.params.obj
@@ -231,8 +231,10 @@ export default {
   },
   watch: {
     'addAdressMes.province': function (newVal) {
-      this.addAdressMes.city = 'option'
-      this.addAdressMes.area = 'option'
+      if(this.adressState==0){
+        this.addAdressMes.city = 'option'
+        this.addAdressMes.area = 'option'
+      }
       for (let i = 0; i < this.cityData.length; i++) {
         console.log(this.cityData[i].value)
         if (this.cityData[i].value == newVal) {
@@ -260,6 +262,19 @@ export default {
           return
         }
       }
+    },
+    'isAddAdressMes':function(newVal){
+      if(newVal==false){
+        this.addAdressMes={
+        person: '',
+        phone: '',
+        province: 'option',
+        city: 'option',
+        area: 'option',
+        careAdress: ''
+      }
+      this.adressState=0
+    }
     }
   },
   data () {
@@ -279,7 +294,7 @@ export default {
         person: '',
         phone: '',
         province: 'option',
-        city: 'option',
+        city: 'options',
         area: 'option',
         careAdress: ''
       },
@@ -288,13 +303,16 @@ export default {
       contryData: [],
       defaultAdress: 0,
       choseAdress: 0,
-      // 订单状态 0未支付 1已支付
-      orderState: 0
-
+      // 订单状态 0未支付 1已支付 2待收货 3订单完成
+      orderState: 0,
+      // 0为新增 1为修改
+      adressState:0,
+      adressEditIndex:0
     }
   },
   methods: {
     async getAdress () {
+      this.adressList=[]
       const result = await this.$http({
         method: 'get',
         url: 'api/users/getAdress',
@@ -311,23 +329,40 @@ export default {
     },
     removeaddAdress () {
       this.isAddAdress = false
-      this.isAddAdressMes = false
     },
     //添加地址
     async add () {
-      const result = await this.$http({
-        method: 'post',
-        url: 'api/users/addAdress',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-        },
-        data: this.$qs.stringify(this.addAdressMes)
-      })
-      if (result.data.success) {
-        this.$alert.success('添加地址成功', 1000)
-        this.isAddAdressMes = false
-        this.getAdress()
+      if(this.adressState==0){
+          const result = await this.$http({
+          method: 'post',
+          url: 'api/users/addAdress',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+          data: this.$qs.stringify(this.addAdressMes)
+        })
+        if (result.data.success) {
+          this.$alert.success('添加地址成功', 1000)
+          this.isAddAdressMes = false
+          this.getAdress()
+        }
+      }else{
+        let editIndex=this.adressEditIndex
+        const result = await this.$http({
+          method: 'post',
+          url: 'api/users/editAdress',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+          data: this.$qs.stringify({...this.addAdressMes,...{editIndex}})
+        })
+        if (result.data.success) {
+          this.$alert.success('修改地址成功', 1000)
+          this.isAddAdressMes = false
+          this.getAdress()
+        }
       }
+      this.adressState=0
     },
     // 隐藏电话号中间
     hidePhone () {
@@ -336,6 +371,7 @@ export default {
     async submitOrder () {
       if (this.adress) {
         let obj = {}
+        obj.orderId='ac'+new Date().getTime()
         obj.adress = this.adress
         obj.state = this.orderState
         obj.goodsList = this.goodsList
@@ -349,8 +385,44 @@ export default {
         })
         if (result.data.success) {
           this.$alert.success('订单成功生成', 1000)
+          this.$router.push({path:'/payment',query:{price:this.allPrice,orderId: obj.orderId}})
         }
       }
+    },
+    async deleteAdress(index){
+      const result = await this.$http({
+          method: 'post',
+          url: 'api/users/deleteAdress',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+          data: this.$qs.stringify({index:index})
+        })
+        if(result.data.success){
+          // 索引值变化
+          if(this.choseAdress>index){
+            this.choseAdress-=1
+          }
+          this.adressList=[]
+          this.getAdress()
+        }
+    },
+    editAdress(index){
+      this.adressState=1
+      this.isAddAdressMes=true
+      this.adressEditIndex=index
+      let adressTemp=this.adressList[index]
+      this.addAdressMes.province=adressTemp.province
+      this.addAdressMes.careAdress=adressTemp.careAdress
+      this.addAdressMes.area=adressTemp.area
+      this.addAdressMes.city=adressTemp.city
+      this.addAdressMes.phone=adressTemp.phone
+      this.addAdressMes.person=adressTemp.person
+      console.log(this.addAdressMes)
+    },
+    chooseAdress(index){
+      this.choseAdress=index
+      this.adress=this.adressList[this.choseAdress]
     },
     goback () {
       this.$router.go(-1)

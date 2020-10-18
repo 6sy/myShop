@@ -31,8 +31,8 @@
         <p>收藏</p>
       </div>
       <div><img src="https://s10.mogucdn.com/mlcdn/c45406/190815_0k9k5gh362a1kbk87hha8ff1bek69_75x75.png"
-             alt="">
-        <p>关注</p>
+             alt="" @click='goAdress'>
+        <p>地址</p>
       </div>
     </div>
     <!-- 购物车 -->
@@ -166,7 +166,9 @@ export default {
     },
     goProfileInfo () {
       this.$refs.upload.iptClick()
-
+    },
+    goAdress(){
+      this.$router.push('/adress')
     }
   }
 }

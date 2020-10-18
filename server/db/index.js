@@ -4,7 +4,7 @@ mongoose.set('useNewUrlParser', true)
 mongoose.set('useUnifiedTopology', true)
 
 // 定义数据库名
-const DB_NAME = 'myShop'
+const DB_NAME = 'shop'
 // 定义数据库地址
 const DB_URL = 'localhost:27017'
 // 连接数据库

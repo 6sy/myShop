@@ -5,8 +5,8 @@ let qs = require('qs')
 
 router.get('/addShop', async ctx => {
   const result = await shopModel.create({
-    s_uid: 13,
-    s_vip: 13,
+    s_uid: 14,
+    s_vip: 14,
     s_isOK: 'Y',
     s_type: '男装',
     s_msg: '2019夏季衬衫男小清新宽松潮流青年长袖寸衫韩版休闲衬衣薄款',

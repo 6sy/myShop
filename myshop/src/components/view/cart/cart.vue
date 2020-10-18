@@ -19,7 +19,8 @@
       </div>
       <div class='cart-list-item'
            v-for='(item1,index1) in cartList[item]'
-           :key='index1'>
+           :key='index1' >
+      <span class='delete' @click='deleteCart(item,index)'>x</span>
         <div class='cart-list-item-btn'
              @click="oneBtn(item1)"><span class='iconfont icon-icon-test-copy'
                 v-show='item1["isOk"]'></span></div>
@@ -88,6 +89,7 @@ export default {
     isAllNum () {
       let allNum = 0;
       for (let i = 0; i < this.shop.length; i++) {
+        console.log(this.cartList[this.shop[i]])
         this.cartList[this.shop[i]].forEach((item) => {
           allNum = Number(allNum) + Number(item.num)
         })
@@ -115,6 +117,10 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
       })
+      if(!result.data.data.user_cart){
+        this.shop=[]
+        return
+      }
       this.cartList = result.data.data["user_cart"]
       this.changeBtn()
       // 商店
@@ -165,6 +171,7 @@ export default {
     },
     // 判断商品全选按钮影响商店
     changeBtn () {
+      console.log(this.shop,'222222222222')
       for (let i = 0; i < this.shop.length; i++) {
         let result = this.cartList[this.shop[i]].every((item) => {
           item.isOk = JSON.parse(item.isOk)
@@ -216,7 +223,25 @@ export default {
         return true
       }
       this.$router.push({ name: 'order', params: { obj } })
-    }
+    },
+    // 点击删除
+     async deleteCart(obj,index){
+      const result = await this.$http({
+        method: 'post',
+        url: 'api/users/deleteCart',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+        },
+        data:this.$qs.stringify({
+          obj:obj,
+          index:index
+        })
+      })
+      if(result.data.success){
+        this.$alert.success('删除商品成功', 1000)
+        this.getCart()
+      }
+     }
   }
 }
 </script>
@@ -380,5 +405,14 @@ export default {
   color: white;
   border-radius: 20px;
   margin-left: 10px;
+}
+.delete{
+  position: absolute;;
+  padding:5px;
+  right:-15px;
+  top:-25px;
+  z-index:999;
+  font-size:25px
+
 }
 </style>

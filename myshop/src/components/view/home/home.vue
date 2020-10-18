@@ -110,6 +110,7 @@ export default {
         data: this.$qs.stringify({ query, num })
       })
       this.goodList = [...this.goodList, ...result.data]
+      console.log('商品列表',this.goodList)
     },
     loadMore () {
       this.loading = true
