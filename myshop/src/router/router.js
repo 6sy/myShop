@@ -17,6 +17,7 @@ import chatShop from '../components/view/chat/chatShop'
 import chatShopUser from '../components/view/chat/chatShopUser'
 import adress from '../components/view/adress/adress'
 import payment from '../components/view/payment/payment'
+import profileCollect from '../components/view/profile/profileCollect'
 
 
 Vue.use(vueRouter)
@@ -40,7 +41,8 @@ const routes = [
       { path: '/home', component: home, meta: { isLogin: true } },
       { path: '/serach', component: serach, meta: { isLogin: true } },
       { path: '/cart', component: cart, meta: { isLogin: false } },
-      { path: '/profile', component: profile, meta: { isLogin: false } }
+      { path: '/profile', component: profile, meta: { isLogin: false } },
+      { path: '/profileCollect', component: profileCollect, meta: { isLogin: false } }
     ]
   }
 ]

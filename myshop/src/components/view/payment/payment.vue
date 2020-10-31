@@ -55,7 +55,11 @@ export default {
   created(){
     this.price=this.$route.query.price
     this.orderId=this.$route.query.orderId
-    console.log(this.orderId)
+    console.log(this.orderId,this.price)
+  },
+  activated(){
+    this.price=this.$route.query.price
+    this.orderId=this.$route.query.orderId
   },
     methods:{
       goback(){

@@ -101,6 +101,7 @@ export default {
       this.$router.push({ name: 'serachItem', params: { searchText: text } })
     },
     async getGoodsList (query, num) {
+      console.log(1)
       const result = await this.$http({
         method: 'post',
         url: 'api/shops/getGoodsList',

@@ -208,6 +208,7 @@ export default {
     console.log(cityData)
   },
   mounted () {
+    console.log(11111111111111111111111,this.goodsList)
     this.goodsList = this.$route.params.obj
   },
   computed: {

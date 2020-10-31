@@ -26,7 +26,7 @@
              alt="">
         <p>消息</p>
       </div>
-      <div><img src="https://s10.mogucdn.com/mlcdn/c45406/190815_31g4a5ebc8bj2f85cj4li8df89aab_75x75.png"
+      <div @click='$router.push("/profileCollect")'><img src="https://s10.mogucdn.com/mlcdn/c45406/190815_31g4a5ebc8bj2f85cj4li8df89aab_75x75.png"
              alt="">
         <p>收藏</p>
       </div>

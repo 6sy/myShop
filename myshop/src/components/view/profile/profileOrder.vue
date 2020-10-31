@@ -45,8 +45,9 @@
             <div class='allPrice'>
               <span>全国包邮,总计:</span>
               <span>¥{{allprice(index)}}</span>
-              <div class='btn' v-if='item.state==0'>付款</div>
+              <div class='btn' v-if='item.state==0' @click='pay(item)'>付款</div>
               <div class='btn' v-if='item.state==1'>等待发货</div>
+              <div class='btn' v-if='item.state==2'>确认收货</div>
             </div>
           </div>
         </div>
@@ -104,6 +105,17 @@ export default {
   },
   methods: {
     timer () {
+    },
+    pay(item){
+      let price=''
+      item.goodsList.forEach((item)=>{
+        price+=item.price*item.num
+      })
+      console.log(item)
+      this.$router.push({path:'/payment',query:{
+        price:price,
+        orderId:item.orderId
+      }})
     },
     // 当前订单的价钱
     allprice (index) {
