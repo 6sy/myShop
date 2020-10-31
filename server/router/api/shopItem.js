@@ -1,6 +1,7 @@
 let Router = require('koa-router')
 const router = new Router()
 let shopModel = require('../../model/shopItem')
+let userModel = require('../../model/userModel')
 let qs = require('qs')
 
 router.get('/addShop', async ctx => {
@@ -74,8 +75,18 @@ router.post('/getGoodsList', async ctx => {
   let num = ctx.request.body.num
   let allList = query * num
   if (!firstRes) {
-    firstRes = true
-    const result = await shopModel.find({})
+    // firstRes = true
+    let result = await shopModel.find({})
+    // 权重值
+    let list=[]
+    // result=result.filter(item=>item.s_vip>0)
+    for(let i=0;i<result.length;i++){
+      if(result[i].s_vip>0){
+        list.push(result[i])
+      }
+    }
+    result=list
+    console.log(result)
     if (result.length > 0) {
       goodsList = result
       ctx.body = goodsList.slice((query - 1) * num, allList)
@@ -109,9 +120,41 @@ router.post('/searchGoods', async ctx => {
   }
 })
 
+// 商品上架 下架
+router.post('/handle',async ctx=>{
+  const state=ctx.request.body.state
+  const id=ctx.request.body.id
+  const result=await shopModel.update({s_uid:id},{s_vip:state==0?-1:1})
+
+  ctx.body={
+    success:true
+  }
+})
+
+// 获取收藏列表
+router.get('/getCollectList',async ctx=>{
+  let user = ctx.state.user.user
+  const result=await userModel.find({user_account:user})
+  const result1=await shopModel.find()
+
+  let list=result[0].user_collect
+console.log(result)
+  let shopList=[]
+  for(let i=0;i<list.length;i++){
+    for(let j=0;j<result1.length;j++){
+      if(list[i]==result1[j].s_uid){
+        shopList.push(result1[j])
+      }
+    }
+  }
+console.log(111,shopList)
+  ctx.body={
+    success:true,
+    data:shopList
+  }
 
 
-
+})
 
 
 module.exports = router.routes()

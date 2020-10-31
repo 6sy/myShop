@@ -361,4 +361,29 @@ router.get('/getUsers',async ctx=>{
     }
   }
 })
+
+router.get('/getOrders',async ctx=>{
+  let orderList=[]
+  const result=await userModel.find()
+})
+
+// 发货
+router.post('/sendProduct',async ctx=>{
+  let orderId=ctx.request.body.id
+  let user=ctx.request.body.user
+  let result=await userModel.find({user_account:user})
+  result=result[0]
+  if(result.user_order.length){
+    for(let i=0;i<result.user_order.length;i++){
+      if(result.user_order[i].orderId==orderId){
+        result.user_order[i].state=2
+      }
+    }
+  }
+  let result1=await userModel.update({user_account:user},{user_order:result.user_order})
+  ctx.body={
+    success:true
+  }
+})
+
 module.exports = router.routes()
